@@ -289,6 +289,7 @@ impl LocalPhysicalPlan {
             | Self::CrossJoin(CrossJoin { context, .. })
             | Self::SortMergeJoin(SortMergeJoin { context, .. })
             | Self::AsofJoin(AsofJoin { context, .. })
+            | Self::NestedLoopJoin(NestedLoopJoin { context, .. })
             | Self::PhysicalWrite(PhysicalWrite { context, .. })
             | Self::CommitWrite(CommitWrite { context, .. })
             | Self::IntoPartitions(IntoPartitions { context, .. })
