@@ -380,6 +380,37 @@ pub fn batch_udf(
     })
 }
 
+#[pyfunction]
+#[allow(clippy::too_many_arguments)]
+pub fn udaf_expr(
+    func_id: &str,
+    func_name: &str,
+    cls_factory: Py<PyAny>,
+    init_args: Py<PyAny>,
+    original_args: Py<PyAny>,
+    return_dtype: PyDataType,
+    state_field_names: Vec<String>,
+    state_field_dtypes: Vec<PyDataType>,
+    expr_args: Vec<PyExpr>,
+) -> PyResult<PyExpr> {
+    let inputs: Vec<ExprRef> = expr_args.into_iter().map(|e| e.expr).collect();
+    let state_dtypes: Vec<DataType> = state_field_dtypes.into_iter().map(|d| d.into()).collect();
+
+    Ok(PyExpr {
+        expr: crate::python_udaf::py_udaf(
+            func_id,
+            func_name,
+            cls_factory.into(),
+            init_args.into(),
+            original_args.into(),
+            return_dtype.into(),
+            state_field_names,
+            state_dtypes,
+            inputs,
+        ),
+    })
+}
+
 /// Initializes all uninitialized UDFs in the expression
 #[pyfunction]
 pub fn initialize_udfs(expr: PyExpr) -> PyResult<PyExpr> {
@@ -539,6 +570,14 @@ impl PyExpr {
 
     pub fn any_value(&self, ignore_nulls: bool) -> PyResult<Self> {
         Ok(self.expr.clone().any_value(ignore_nulls).into())
+    }
+
+    pub fn first_value(&self, ignore_nulls: bool) -> PyResult<Self> {
+        Ok(self.expr.clone().first_value(ignore_nulls).into())
+    }
+
+    pub fn last_value(&self, ignore_nulls: bool) -> PyResult<Self> {
+        Ok(self.expr.clone().last_value(ignore_nulls).into())
     }
 
     pub fn skew(&self) -> PyResult<Self> {

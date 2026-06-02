@@ -23,6 +23,7 @@
         * [Overview](custom-code/index.md)
         * [Functions](custom-code/func.md)
         * [Classes & Methods](custom-code/cls.md)
+        * [Aggregate UDFs](custom-code/udaf.md)
         * [Working with GPUs](custom-code/gpu.md)
         * [Legacy UDF Migration Guide](custom-code/migration.md)
         * [Legacy UDFs](custom-code/udfs.md)
@@ -71,6 +72,7 @@
     * Optimization
         * [Managing Memory Usage](optimization/memory.md)
         * [Partitioning and Batching](optimization/partitioning.md)
+        * [Shuffle Algorithms](optimization/shuffle.md)
         * [Join Strategies](optimization/join-strategies.md)
     * Observability
         * [Dashboard](observability/dashboard.md)

@@ -12,6 +12,8 @@ if TYPE_CHECKING:
     import builtins
     from collections.abc import Callable
 
+    from typing_extensions import Self
+
     from daft.daft import PyDataType
 
 
@@ -215,6 +217,12 @@ class Series:
         """Convert this Series to an pyarrow array."""
         _ensure_registered_super_ext_type()
         return self._series.to_arrow()
+
+    def __arrow_c_schema__(self) -> Any:
+        return self._series.__arrow_c_schema__()
+
+    def __arrow_c_array__(self, requested_schema: Any = None) -> tuple[Any, Any]:
+        return self._series.__arrow_c_array__(requested_schema)
 
     def to_pylist(self, maps_as_pydicts: Literal["lossy", "strict"] | None = None) -> list[Any]:
         """Convert this Series to a Python list.
@@ -831,7 +839,7 @@ class SeriesNamespace:
         raise NotImplementedError("We do not support creating a SeriesNamespace via __init__ ")
 
     @classmethod
-    def from_series(cls: type[SomeSeriesNamespace], series: Series) -> SomeSeriesNamespace:
+    def from_series(cls, series: Series) -> Self:
         ns = cls.__new__(cls)
         ns._series = series._series
         return ns
